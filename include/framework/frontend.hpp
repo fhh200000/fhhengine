@@ -10,8 +10,10 @@ class FhhEngine {
         U32 width,height;
         const char* title;
         GLFWwindow* w;
+        VkInstance instance;
     public:
         FhhEngine(U32 width, U32 height, const char* title);
         void run();
+        ~FhhEngine();
 };
 #endif

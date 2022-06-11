@@ -13,4 +13,8 @@ typedef char I8;
 
 typedef U8 byte;
 
+typedef enum {
+    FHHENGINE_SUCCESS=VK_SUCCESS,
+    FHHENGINE_GENERIC_FAILURE=-1,
+} fhhengine_status;
 #endif
