@@ -5,12 +5,18 @@
 #define GLFW_INCLUDE_VULKAN
 #include <common.hpp>
 #include <GLFW/glfw3.h>
+#ifdef FHHENGINE_DEBUG
+#include <framework/debug.hpp>
+#endif
 class FhhEngine {
     private:
         U32 width,height;
         const char* title;
         GLFWwindow* w;
         VkInstance instance;
+#ifdef FHHENGINE_DEBUG
+        VkDebugUtilsMessengerEXT messenger;
+#endif
     public:
         FhhEngine(U32 width, U32 height, const char* title);
         void run();

@@ -17,6 +17,9 @@ FhhEngine::FhhEngine(U32 width, U32 height, const char* title)
         printf("Engine creation failed!\n");
         return;
     }
+#ifdef FHHENGINE_DEBUG
+    create_debug_interface(&instance,&messenger);
+#endif
 }
 void FhhEngine::run()
 {
@@ -26,6 +29,10 @@ void FhhEngine::run()
 }
 FhhEngine::~FhhEngine()
 {
+#ifdef FHHENGINE_DEBUG
+    destroy_debug_interface(instance,messenger);
+#endif
+    vkDestroyInstance(instance, nullptr);
     glfwDestroyWindow(w);
     glfwTerminate();
 }
