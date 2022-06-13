@@ -1,4 +1,6 @@
 #Basic
+SET(CMAKE_C_COMPILER    "ccache gcc")
+SET(CMAKE_CXX_COMPILER  "ccache g++")
 cmake_minimum_required(VERSION 3.7)
 project(engine_test LANGUAGES CXX)
 project(fhhengine LANGUAGES CXX)
@@ -6,7 +8,10 @@ project(fhhengine LANGUAGES CXX)
 include_directories(${Vulkan_INCLUDE_DIRS} include/)
 include(FindVulkan)
 add_executable(engine_test main.cpp)
-add_library(fhhengine STATIC framework/frontend.cpp framework/instance.cpp framework/debug.cpp)
+#Files
+aux_source_directory (framework/ FHHENGINE_FRAMEWORK)
+
+add_library(fhhengine STATIC ${FHHENGINE_FRAMEWORK})
 target_link_libraries(fhhengine ${Vulkan_LIBRARIES} glfw)
 target_link_libraries(engine_test fhhengine)
 
