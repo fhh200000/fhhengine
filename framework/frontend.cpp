@@ -24,9 +24,14 @@ FhhEngine::FhhEngine(U32 width, U32 height, const char* title)
 #ifdef FHHENGINE_DEBUG
     create_debug_interface(&instance,&messenger);
 #endif
-    VkPhysicalDevice device = select_physical_device(instance,nullptr);
+    VkPhysicalDevice physical_device = select_physical_device(instance,nullptr);
+    if(physical_device==nullptr) {
+        cerr<<"Cannot select a physical device!"<<endl;
+        return;
+    }
+    device = create_logical_device(physical_device);
     if(device==nullptr) {
-        cerr<<"Cannot select a device!"<<endl;
+        cerr<<"Cannot create a logical device!"<<endl;
         return;
     }
 }
@@ -41,6 +46,7 @@ FhhEngine::~FhhEngine()
 #ifdef FHHENGINE_DEBUG
     destroy_debug_interface(instance,messenger);
 #endif
+    vkDestroyDevice(device,nullptr);
     vkDestroyInstance(instance, nullptr);
     glfwDestroyWindow(w);
     glfwTerminate();

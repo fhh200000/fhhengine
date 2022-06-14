@@ -3,6 +3,8 @@
 using std::cout;
 using std::cerr;
 using std::endl;
+extern const char* enable_extension_names[];
+extern const char* enable_layer_names[];
 VkPhysicalDevice select_physical_device(VkInstance instance, DeviceRequirement requirements[])
 {
     VkPhysicalDevice desired_device;
@@ -40,4 +42,65 @@ VkPhysicalDevice select_physical_device(VkInstance instance, DeviceRequirement r
     desired_device = devices[0];
     delete[] devices;
     return desired_device;
+}
+static U32 get_queue_family_properties(VkPhysicalDevice device, VkQueueFamilyProperties* properties)
+{
+    U32 status = -1;
+    U32 queue_count = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device,&queue_count,nullptr);
+    if(!queue_count) {
+        return -1;
+    }
+    VkQueueFamilyProperties* properties_list = new VkQueueFamilyProperties[queue_count];
+    vkGetPhysicalDeviceQueueFamilyProperties(device,&queue_count,properties_list);
+    for(U32 i=0;i<queue_count;i++) {
+        if(properties_list[i].queueCount>0 && properties_list[i].queueFlags&VK_QUEUE_GRAPHICS_BIT) {
+            //Good!
+            *properties = properties[i];
+            status = i;
+            break;
+        }
+    }
+    delete[] properties_list;
+    return status;
+}
+VkDevice create_logical_device(VkPhysicalDevice physical_device)
+{
+    VkQueueFamilyProperties queue_family_properties;
+    VkDevice logical_device;
+    U32 queue_family_index = get_queue_family_properties(physical_device,&queue_family_properties);
+    if(queue_family_index==-1) {
+        cerr<<"Cannot get available queue family!"<<endl;
+        return nullptr;
+    }
+    VkPhysicalDeviceFeatures features = {
+
+    };
+    float queue_priority = 1.0f;
+    VkDeviceQueueCreateInfo queue_create_info = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+        .queueFamilyIndex = queue_family_index,
+        .queueCount = 1,
+        .pQueuePriorities = &queue_priority
+    };
+    VkDeviceCreateInfo create_info = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+        .queueCreateInfoCount = 1,
+        .pQueueCreateInfos = &queue_create_info,
+#ifdef FHHENGINE_DEBUG
+        .enabledLayerCount = 1,
+        .ppEnabledLayerNames = enable_layer_names,
+#else
+        .enabledLayerCount = 0,
+        .ppEnabledLayerNames = nullptr,
+#endif
+        .enabledExtensionCount = 0,
+        .ppEnabledExtensionNames = nullptr,
+        .pEnabledFeatures = &features
+    };
+    if(vkCreateDevice(physical_device,&create_info,nullptr,&logical_device)!=VK_SUCCESS) {
+        cerr<<"Cannot create logical device!"<<endl;
+        return nullptr;
+    }
+    return logical_device;
 }

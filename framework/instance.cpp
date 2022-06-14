@@ -1,5 +1,14 @@
 #include <framework/instance.hpp>
-
+const char* enable_extension_names[] = {
+#ifdef FHHENGINE_DEBUG
+    VK_EXT_DEBUG_UTILS_EXTENSION_NAME
+#endif
+};
+const char* enable_layer_names[] = {
+#ifdef FHHENGINE_DEBUG
+    "VK_LAYER_KHRONOS_validation",
+#endif
+};
 fhhengine_status create_instance(const char* application_name,VkInstance* instance)
 {
     VkApplicationInfo app_info = {
@@ -11,17 +20,6 @@ fhhengine_status create_instance(const char* application_name,VkInstance* instan
                                          FHHENGINE_MINOR_VERSION,
                                          FHHENGINE_PATCH_VERSION),
         .apiVersion = VK_API_VERSION_1_2
-    };
-
-    const char* enable_extension_names[] = {
-#ifdef FHHENGINE_DEBUG
-        VK_EXT_DEBUG_UTILS_EXTENSION_NAME
-#endif
-    };
-    const char* enable_layer_names[] = {
-#ifdef FHHENGINE_DEBUG
-        "VK_LAYER_KHRONOS_validation",
-#endif
     };
     VkInstanceCreateInfo create_info = {
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,

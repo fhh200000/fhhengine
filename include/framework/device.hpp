@@ -17,4 +17,5 @@ typedef struct {
     U64                   val;
 } DeviceRequirement;
 VkPhysicalDevice select_physical_device(VkInstance instance, DeviceRequirement requirements[]);
+VkDevice create_logical_device(VkPhysicalDevice physical_device);
 #endif

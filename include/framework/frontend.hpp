@@ -14,6 +14,7 @@ class FhhEngine {
         const char* title;
         GLFWwindow* w;
         VkInstance instance;
+        VkDevice device;
 #ifdef FHHENGINE_DEBUG
         VkDebugUtilsMessengerEXT messenger;
 #endif
