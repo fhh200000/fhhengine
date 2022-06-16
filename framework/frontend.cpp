@@ -1,6 +1,7 @@
 #include <framework/frontend.hpp>
 #include <framework/instance.hpp>
 #include <framework/device.hpp>
+#include <framework/surface.hpp>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -34,6 +35,11 @@ FhhEngine::FhhEngine(U32 width, U32 height, const char* title)
         cerr<<"Cannot create a logical device!"<<endl;
         return;
     }
+    surface = create_surface(instance,w);
+    if(surface==nullptr) {
+        cerr<<"Cannot create a Surface"<<endl;
+        return;
+    }
 }
 void FhhEngine::run()
 {
@@ -46,6 +52,7 @@ FhhEngine::~FhhEngine()
 #ifdef FHHENGINE_DEBUG
     destroy_debug_interface(instance,messenger);
 #endif
+    destroy_surface(instance,surface);
     vkDestroyDevice(device,nullptr);
     vkDestroyInstance(instance, nullptr);
     glfwDestroyWindow(w);

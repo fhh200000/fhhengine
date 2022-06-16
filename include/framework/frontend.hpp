@@ -15,6 +15,7 @@ class FhhEngine {
         GLFWwindow* w;
         VkInstance instance;
         VkDevice device;
+        VkSurfaceKHR surface;
 #ifdef FHHENGINE_DEBUG
         VkDebugUtilsMessengerEXT messenger;
 #endif
